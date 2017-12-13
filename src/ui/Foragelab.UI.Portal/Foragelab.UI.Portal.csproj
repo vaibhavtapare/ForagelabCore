@@ -21,19 +21,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\app\app.routing.component.ts" />
     <None Remove="ClientApp\app\features\app.routing.ts" />
+    <None Remove="ClientApp\app\features\auth\auth.component.ts" />
     <None Remove="ClientApp\app\features\auth\login\login.component.ts" />
+    <None Remove="ClientApp\app\features\auth\logout\logout.component.ts" />
     <None Remove="ClientApp\app\shared\guards\auth.guard.ts" />
+    <None Remove="ClientApp\app\shared\shared.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\app\app.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\app.routing.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\auth\auth-routing.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\auth\auth.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\auth\auth.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\features\auth\login\login.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\auth\logout\logout.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\home\home.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\home\home-routing.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\shared\guards\auth.guard.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\shared.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ClientApp\app\core\services\" />
+    <Folder Include="ClientApp\app\layout\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
