@@ -1,0 +1,73 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Add Role</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/admin/roles']">Roles</a>
+        </li>
+        <li>
+            <a [routerLink]="['/admin/roles/add']" class="active">Add Role</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+            </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation">
+                <form (ngSubmit)="saveRole()" role="form" #roleform="ngForm">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Basic Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <input-focus required label="Name" [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="role.name" name="name"></input-focus>
+                                <button type="submit" [disabled]="!roleform.form.valid || processing" class="btn btn-primary">
+                                    Save Role
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/admin/roles'])">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

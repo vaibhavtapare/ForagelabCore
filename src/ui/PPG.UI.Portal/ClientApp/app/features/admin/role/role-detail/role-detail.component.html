@@ -1,0 +1,461 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Role</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/admin/roles']">Roles</a>
+        </li>
+        <li *ngIf="role">
+            <a [routerLink]="['/admin/roles/detail', role.id]" class="active">{{role.name}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#permissions" aria-expanded="false"><span>Permissions</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#users" aria-expanded="false"><span>Users</span></a>
+        </li>
+        <li *permission="'roles-delete'" class="">
+            <a data-toggle="tab" href="#delete" aria-expanded="false"><span>Delete</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                    <li data-option="" data-value="#permissions">
+                        <span>Permissions</span>
+                    </li>
+                    <li data-option="" data-value="#users">
+                        <span>Users</span>
+                    </li>
+                    <li *permission="'roles-delete'" data-option="" data-value="#delete">
+                        <span>Delete</span>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+                <option value="#permissions">Permissions</option>
+                <option value="#users">Users</option>
+                <option *permission="'roles-delete'" value="#delete">Delete</option>
+            </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation">
+                <form (ngSubmit)="saveRole()" role="form" #roleform="ngForm">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Basic Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <input-focus required label="Name" [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="role.name" name="name"></input-focus>
+                                <button type="submit" [disabled]="!roleform.form.valid || processing" class="btn btn-primary">
+                                    Save Role
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/admin/roles'])">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="tab-pane" id="permissions">
+            <div class="row">
+                <div class="col-md-12">                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="permissionsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Job Permissions
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="permissionGroups">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Jobs</h5>
+                                    <div *ngFor="let p of permissionGroups.Jobs" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Corporate Approvals</h5>
+                                    <div *ngFor="let p of permissionGroups['Job Request']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Rates &amp; Services</h5>
+                                    <div *ngFor="let p of permissionGroups['Job Rates']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Production Reports</h5>
+                                    <div *ngFor="let p of permissionGroups['Production Reports']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Job Closures</h5>
+                                    <div *ngFor="let p of permissionGroups['Job Closure']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->  
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="permissionsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Work Instruction Permissions
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="permissionGroups">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Work Instructions</h5>
+                                    <div *ngFor="let p of permissionGroups['Work Instructions']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Approvals</h5>
+                                    <div *ngFor="let p of permissionGroups['Work Instruction Request']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Risk Assessments</h5>
+                                    <div *ngFor="let p of permissionGroups['Risk Assessment']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Job Audits</h5>
+                                    <div *ngFor="let p of permissionGroups['Job Audit']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Process Audits</h5>
+                                    <div *ngFor="let p of permissionGroups['Process Audit']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL --> 
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="permissionsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Client Permissions
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="permissionGroups">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Client Access</h5>
+                                    <div *ngFor="let p of permissionGroups['Client Access']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->                     
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="permissionsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                General Permissions
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="permissionGroups">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Clients</h5>
+                                    <div *ngFor="let p of permissionGroups.Clients" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Locations</h5>
+                                    <div *ngFor="let p of permissionGroups.Locations" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Contacts</h5>
+                                    <div *ngFor="let p of permissionGroups.Contacts" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>AR Terms</h5>
+                                    <div *ngFor="let p of permissionGroups['AR Terms']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Employees</h5>
+                                    <div *ngFor="let p of permissionGroups.Employees" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Pass Down Logs</h5>
+                                    <div *ngFor="let p of permissionGroups['Pass Down Log']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Workplace Risk Assessments</h5>
+                                    <div *ngFor="let p of permissionGroups['Workplace Risk Assessment']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Scanners</h5>
+                                    <div *ngFor="let p of permissionGroups.Scanners" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Dashboards</h5>
+                                    <div *ngFor="let p of permissionGroups.Dashboards" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->             
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="permissionsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Admin Permissions
+                            </div>
+                        </div>
+                        <div class="panel-body" *ngIf="permissionGroups">
+                            <div class="row">
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Users</h5>
+                                    <div *ngFor="let p of permissionGroups.Users" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>User Roles</h5>
+                                    <div *ngFor="let p of permissionGroups['User Roles']" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Permissions</h5>
+                                    <div *ngFor="let p of permissionGroups.Permissions" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-sm-4 col-md-3">
+                                    <h5>Addresses</h5>
+                                    <div *ngFor="let p of permissionGroups.Addresses" class="checkbox check-primary">
+                                        <input (click)="togglePermission(p)" [checked]="isInRole(p.id)" type="checkbox" value="{{p.id}}" [id]="'permission' + p.id">
+                                        <label [for]="'permission' + p.id">{{p.label}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="users">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="usersLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                User Listing
+                            </div>
+                            <div class="pull-right">
+                                <div class="col-xs-12">
+                                    <input type="text" id="userSearchFor" name="userSearchFor" (change)="userFilterChanged()" [(ngModel)]="userSearchFor" class="form-control pull-right" placeholder="Search">
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="panel-body">
+                            <data-table [data]="users" [config]="usersConfig" (refresh)="loadUsers($event)" [pagination]="usersPagination"></data-table>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div *permission="'roles-delete'" class="tab-pane" id="delete">
+            <div class="row column-seperation">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Delete Role
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <p>&nbsp;</p>
+                                        <p><b>Deleting a role cannot be undone.</b></p>
+                                        <p>Before doing so, all associated users must be removed from this role.</p>
+                                        <p>&nbsp;</p>
+                                        <button (click)="openModal('deleteRole')" type="submit" [disabled]="(users && users.length > 0) || processing || usersLoading" class="btn btn-danger">
+                                            Delete Role
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal id="addPermission" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addPermission')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Permission</h5>
+            </div>
+            <form role="form" #permissionaddform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!-- START PANEL -->
+                            <div class="panel panel-default">
+                                <div class="panel-body" [in-progress]="processing">
+                                    <select-focus required label="Permission To Add" [data]="availablePermissions" dataTextField="name" dataValueField="id" [propertyName]="newPermissionId" class="form-group form-group-default required" [(ngModel)]="newPermissionId" name="newPermissionId"></select-focus>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button (click)="addPermission();" [disabled]="!permissionaddform.form.valid" type="button" class="btn btn-primary btn-block m-t-5">Add Permission</button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addPermission')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+</div>
+    </div>
+</modal>
+
+<modal *permission="'roles-delete'" id="deleteRole" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('deleteRole')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to delete the {{role.name}} role.</p>
+                        <p><b class="text-danger">Reminder:</b> Deleting a role cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="deleteRole();" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('deleteRole')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

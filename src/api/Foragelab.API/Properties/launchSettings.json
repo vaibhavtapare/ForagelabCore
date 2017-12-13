@@ -13,6 +13,7 @@
       "launchBrowser": true,
       "launchUrl": "api/values",
       "environmentVariables": {
+        "JWTSecretKey": "ACF91A82-616C-4844-B978-7318EC67C335",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

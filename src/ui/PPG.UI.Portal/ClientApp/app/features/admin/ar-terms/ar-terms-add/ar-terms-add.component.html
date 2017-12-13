@@ -1,0 +1,47 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Add AR Term</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/admin/ar-terms']">AR Terms</a>
+        </li>
+        <li>
+            <a [routerLink]="['/admin/ar-terms/add']" class="active">Add AR Term</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+
+    <!-- Tab panes -->
+    <div class="row column-seperation">
+        <form (ngSubmit)="saveARTerm()" role="form" #arTermform="ngForm">
+            <div class="col-md-6">
+                <!-- START PANEL -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Basic Information
+                        </div>
+                    </div>
+                    <div class="panel-body" [in-progress]="processing">
+                        <input-focus required label="Name" [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="arTerm.name" name="name"></input-focus>
+                        <input-focus required label="Days" [propertyName]="days" class="form-group form-group-default required" [(ngModel)]="arTerm.days" name="days"></input-focus>
+                        <button type="submit" [disabled]="!arTermform.form.valid || processing" class="btn btn-primary">
+                            Save AR Term
+                            <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                        </button>&nbsp;
+                        <a class="btn btn-default" [routerLink]="(['/admin/ar-terms'])">Cancel</a>
+                    </div>
+                </div>
+                <!-- END PANEL -->
+            </div>
+        </form>
+    </div>
+</div>

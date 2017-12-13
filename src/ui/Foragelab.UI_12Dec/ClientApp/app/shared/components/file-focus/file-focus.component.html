@@ -1,0 +1,5 @@
+﻿
+
+<label [ngClass]="{'fade': hasValue}">{{label}}</label>
+<input #inputElement type="file" [name]="propertyName" [placeholder]="placeholder" class="form-control" [(ngModel)]="value" (focus)="onFocus()" (blur)="onBlur()" />
+

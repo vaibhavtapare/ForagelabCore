@@ -1,0 +1,25 @@
+﻿
+    <div class="timeline-point" [ngClass]="iconClass">
+        <i class="fa" [ngClass]="icon"></i>
+    </div>
+    <!-- timeline-point -->
+    <div class="timeline-content">
+        <!-- START CARD ELEMENT -->
+        <div class="card share full-width">
+            <div class="circle" data-toggle="tooltip" title="{{transaction.resultingObject}}">
+            </div>
+            <div class="card-header clearfix">
+                <div class="user-pic">
+                    <img width="33" height="33" [src]="profileImage">
+                </div>
+                <h5>{{transaction.fullName}}</h5>
+                <h6>
+                    <span class="location semi-bold"><i class="fa fa-clock-o"></i> on {{transaction.transactionDate | date:'EEEE, MMMM d, y'}} at {{transaction.transactionDate | date:'h:mm a'}}</span>
+                </h6>
+            </div>
+            <div class="card-description">
+                <p>{{transaction.description}}</p>
+            </div>
+        </div>
+        <!-- END CARD ELEMENT -->
+    </div>

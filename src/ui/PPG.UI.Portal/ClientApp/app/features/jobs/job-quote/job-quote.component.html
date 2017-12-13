@@ -1,0 +1,562 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Job</h3>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="job" class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/jobs']">Job Listing</a>
+        </li>
+        <li>
+            <a [routerLink]="['/jobs', job.id]" class="active">{{job.jobCode}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#details" aria-expanded="false"><span>Details</span></a>
+        </li>
+        <li *permission="'jobs-rates'" class="">
+            <a data-toggle="tab" href="#services" aria-expanded="false"><span>Services</span></a>
+        </li>
+        <li *permission="'jobs-rates'" class="">
+            <a data-toggle="tab" href="#rates" aria-expanded="false"><span>Rates</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#timeline" aria-expanded="false"><span>Timeline</span></a>
+        </li>
+        <li *permission="'jobs-delete'" class="">
+            <a data-toggle="tab" href="#archive" aria-expanded="false"><span>Archive</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                    <li data-option="" data-value="#details">
+                        <span>Details</span>
+                    </li>
+                    <li *permission="'jobs-rates'" data-option="" data-value="#services">
+                        <span>Services</span>
+                    </li>
+                    <li *permission="'jobs-rates'" data-option="" data-value="#rates">
+                        <span>Rates</span>
+                    </li>
+                    <li data-option="" data-value="#timeline">
+                        <span>Timeline</span>
+                    </li>
+                    <li *permission="'jobs-delete'" data-option="" data-value="#archive">
+                        <span>Archive</span>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+                <option value="#details">Details</option>
+                <option *permission="'jobs-rates'" value="#services">Services</option>
+                <option *permission="'jobs-rates'" value="#rates">Rates</option>
+                <option value="#timeline">Timeline</option>
+                <option *permission="'jobs-delete'" value="#archive">Archive</option>
+            </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation">
+                    <div class="panel col-md-12">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Profile Information
+                            </div>
+                            <div class="pull-right">
+                                <span *ngIf="showRequest"><button *permission="'jobs-add'" (click)="quoteRequest()" [disabled]="!isEnableRequest" class="btn btn-primary"><i class="fa fa-sticky-note"></i> {{requestBtnText}}</button></span>
+                                <span *ngIf="showApprove"><button *permission="'quote-approval'" (click)="quoteApprove()" class="btn btn-success"><i class="fa fa-check-square-o"></i> {{approveBtnText}}</button></span>
+                                <span *ngIf="showDecline"><button *permission="'quote-approval'" (click)="quoteDecline()" class="btn btn-danger"><i class="fa fa-ban"></i> {{declineBtnText}}</button></span>
+                            </div>
+                        </div>
+                    </div>
+                <form (ngSubmit)="saveJob()" role="form" #jobform="ngForm">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-body" [in-progress]="processing">
+                                <select-focus *ngIf="!isContact" (change)="loadClientData()" required label="Client" [data]="clients" dataTextField="name" dataValueField="id" [propertyName]="clientId" class="form-group form-group-default required" [(ngModel)]="job.clientId" name="clientId"></select-focus>
+                                <select-focus [disabled]="!job.clientId || job.clientId == 0" required label="Location" [data]="locations" dataTextField="name" dataValueField="id" [propertyName]="locationId" class="form-group form-group-default required" [(ngModel)]="job.locationId" name="locationId"></select-focus>
+
+                                <select-focus required label="Type" [data]="jobTypes" dataTextField="name" dataValueField="id" [propertyName]="jobTypeId" class="form-group form-group-default required" [(ngModel)]="job.jobTypeId" name="jobTypeId"></select-focus>
+
+                                <textarea-focus required label="Description" placeholder="Describe the work to be performed" [propertyName]="description" class="form-group form-group-default required" [(ngModel)]="job.description" name="description" rows="7"></textarea-focus>
+                                <button type="submit" [disabled]="!jobform.form.valid || processing" class="btn btn-primary">
+                                    Save Job <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                                </button> &nbsp;
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <!--<div class="panel-heading">
+                    <div class="panel-title">
+
+                    </div>
+                </div>-->
+                            <div class="panel-body" [in-progress]="processing">
+                                <select-focus required label="Client Contact" [data]="contacts" dataTextField="fullName" dataValueField="id" [propertyName]="quoteApprovalContactId" class="form-group form-group-default required" [(ngModel)]="job.quoteApprovalContactId" name="quoteApprovalContactId"></select-focus>
+                                <select-focus required label="Location Contact" [data]="contacts" dataTextField="fullName" dataValueField="id" [propertyName]="workInstructionApprovalContactId" class="form-group form-group-default required" [(ngModel)]="job.workInstructionApprovalContactId" name="workInstructionApprovalContactId"></select-focus>
+
+                                <input-focus label="PO Number" [propertyName]="poNumber" class="form-group form-group-default" [(ngModel)]="job.poNumber" name="poNumber"></input-focus>
+                                <input-focus label="Start Date" [propertyName]="startDate" class="form-group form-group-default" [(ngModel)]="job.startDate" name="startDate"></input-focus>
+                                <input-focus label="Part Description" [propertyName]="partDescription" class="form-group form-group-default" [(ngModel)]="job.partDescription" name="partDescription"></input-focus>
+                                <div>
+                                    <input type="checkbox" [(ngModel)]="job.useIdentifiers" name="useIdentifiers" [checked]="job.useIdentifiers" (click)="checkUnCheckUseIdentifiers()" />
+                                    <label>Use Identifiers</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="tab-pane" id="details">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Job Details
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="jobDefectsLoading">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="panel-heading">
+                                        <div class="panel-title pull-left">
+                                            Part Numbers
+                                        </div>
+                                        <div class="pull-right">
+                                            <a *permission="'jobs-edit'" (click)="openModal('addPartNumber')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Part Number</a>
+                                        </div>
+                                    </div>
+                                    <div [in-progress]="jobPartNumbersLoading">
+                                        <data-table allowDelete="true" [data]="jobPartNumbers" (delete)="deletePartNumber($event)" deleteTitle="Are you sure?" deleteMessage="Are you sure you want to delete the part number?" [config]="jobPartNumbersConfig" (refresh)="loadPartNumbers($event)" [pagination]="jobPartNumbersPagination"></data-table>
+                                    </div>
+                                </div>
+                                <div *ngIf="showDefect" class="col-md-4">
+                                    <div class="panel-heading">
+                                        <div class="panel-title pull-left">
+                                            Defects
+                                        </div>
+                                        <div class="pull-right">
+                                            <a *permission="'jobs-edit'" (click)="openModal('addDefect')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Defect</a>
+                                        </div>
+                                    </div>
+                                    <div [in-progress]="jobDefectsLoading">
+                                        <data-table allowDelete="true" [data]="jobDefects" (delete)="deleteDefect($event)" deleteTitle="Are you sure?" deleteMessage="Are you sure you want to delete the defect?" [config]="jobDefectsConfig" (refresh)="loadDefects($event)" [pagination]="jobDefectPagination"></data-table>
+                                    </div>
+                                </div>
+                                <div *ngIf="showRework" class="col-md-4">
+                                    <div class="panel-heading">
+                                        <div class="panel-title pull-left">
+                                            Rework
+                                        </div>
+                                        <div class="pull-right">
+                                            <a *permission="'jobs-edit'" (click)="openModal('addRework')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Rework</a>
+                                        </div>
+                                    </div>
+                                    <div [in-progress]="workInstructionReworkLoading">
+                                        <data-table allowDelete="true" [data]="workInstructionReworks" (delete)="deleteWorkInstructionRework($event)" deleteTitle="Are you sure?" deleteMessage="Are you sure you want to delete the rework?" [config]="workInstructionReworkConfig" (refresh)="loadWorkIstructionRework($event)" [pagination]="workInstructionReworkPagination"></data-table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div *permission="'jobs-rates'" class="tab-pane" id="services">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Services
+                            </div>
+                            <div class="pull-right">
+                                <a *permission="'jobs-rates-add'" (click)="openModal('addService')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Service</a>
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="JobServicesLoading">
+                            <div class="dataTables_wrapper form-inline no-footer">
+                                <div>
+                                    <table class="table dataTable no-footer" [ngClass]="{'table-hover': hoverRows, 'table-condensed': condenseRows, 'table-striped': stripedRows}" role="grid">
+                                        <thead>
+                                            <tr role="row">
+                                                <th *ngFor="let column of JobServicesConfig.columns" rowspan="1" colspan="1">{{column.columnHeader}}</th>
+                                                <th class="v-align-middle"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ngForm #Serviceeditform="ngForm" *ngFor="let record of JobServices;let i = index" role="row" [ngClass]="{'even': i % 2 != 0, 'odd': i % 2 == 0}">
+                                                <td class="v-align-middle">
+                                                    <span>{{JobServicesConfig.columns[0].formatter(record)}}</span>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="shift1Count" class="form-group form-group-default required" [(ngModel)]="record.shift1Count" name="shift1Count"></input-focus>
+                                                </td>
+                                                <td>
+                                                    <input-focus inputType="number" required [propertyName]="shift2Count" class="form-group form-group-default required" [(ngModel)]="record.shift2Count" name="shift2Count"></input-focus>
+                                                </td>
+                                                <td>
+                                                    <input-focus inputType="number" required [propertyName]="shift3Count" class="form-group form-group-default required" [(ngModel)]="record.shift3Count" name="shift3Count"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <button name="s" *permission="'jobs-rates-edit'" [disabled]="!Serviceeditform.valid || processing" (click)="saveService(record)" type="submit" class="btn btn-complete">Save</button>
+                                                    <button name="d" *permission="'jobs-rates-delete'" (click)="openServiceModal('delete' + JobServicesConfig.entityTypeName, record)" class="btn btn-danger">Delete</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div *permission="'jobs-rates'" class="tab-pane" id="rates">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Rates
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="JobServicesLoading">
+                            <div class="dataTables_wrapper form-inline no-footer">
+                                <div>
+                                    <table class="table dataTable no-footer" [ngClass]="{'table-hover': hoverRows, 'table-condensed': condenseRows, 'table-striped': stripedRows}" role="grid">
+                                        <thead>
+                                            <tr role="row">
+                                                <th *ngFor="let column of jobserviceRateConfig.columns" rowspan="1" colspan="1">{{column.columnHeader}}</th>
+                                                <th class="v-align-middle"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ngForm #Servicerateseditform="ngForm" *ngFor="let record of JobServices;let i = index" role="row" [ngClass]="{'even': i % 2 != 0, 'odd': i % 2 == 0}">
+                                                <td class="v-align-middle">
+                                                    <span>{{jobserviceRateConfig.columns[0].formatter(record)}}</span>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="shift1Rate" class="form-group form-group-default servicerate required" [(ngModel)]="record.shift1Rate" name="shift1Rate"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="shift2Rate" class="form-group form-group-default servicerate required" [(ngModel)]="record.shift2Rate" name="shift2Rate"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="shift3Rate" class="form-group form-group-default servicerate required" [(ngModel)]="record.shift3Rate" name="shift3Rate"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="saturdayRate" class="form-group form-group-default servicerate required" [(ngModel)]="record.saturdayRate" name="saturdayRate"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="sundayRate" class="form-group form-group-default servicerate required" [(ngModel)]="record.sundayRate" name="sundayRate"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="holidayRate" class="form-group form-group-default servicerate required" [(ngModel)]="record.holidayRate" name="holidayRate"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <input-focus inputType="number" required [propertyName]="overtimeRate" class="form-group form-group-default servicerate required" [(ngModel)]="record.overtimeRate" name="overtimeRate"></input-focus>
+                                                </td>
+                                                <td class="v-align-middle">
+                                                    <button name="s" *permission="'jobs-rates-edit'" [disabled]="!Servicerateseditform.valid || processing" (click)="saveService(record)" type="submit" class="btn btn-complete">Save</button>
+                                                    <button name="d" *permission="'jobs-rates-delete'" (click)="openServiceRatesModal('delete' + jobserviceRateConfig.entityTypeName, record)" class="btn btn-danger">Delete</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="timeline">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Timeline
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="transactionsProcessing">
+                            <timeline [(isLoading)]="transactionsLoading" [(data)]="transactions" (refresh)="loadTransactions($event)" [(pagination)]="transactionPagination"></timeline>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *permission="'jobs-delete'" class="tab-pane" id="archive">
+            <div class="row column-seperation">
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Archive {{job.jobCode}}
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>&nbsp;</p>
+                                    <p><b class="text-danger">Archiving a job will prevent further time/data entry in the portal.</b></p>
+                                    <p>&nbsp;</p>
+                                    <button (click)="openModal('archiveJob')" type="submit" [disabled]="processing" class="btn btn-danger">
+                                        Archive Job
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal *permission="'jobs-delete'" id="archiveJob" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('archiveJob')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to archive job #{{job.jobCode}}.</p>
+                        <p><b class="text-danger">Reminder:</b> Archiving a job will prevent further time/data entry in the portal.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="archiveJob();" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('archiveJob')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'jobs-edit'" id="addPartNumber" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addPartNumber')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Part Number</h5>
+            </div>
+            <form (ngSubmit)="addPartNumber()" role="form" #partNumberform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input-focus label="Part Number" required [propertyName]="partNumber" class="form-group form-group-default required" [(ngModel)]="newPartNumber.partNumber" name="partNumber"></input-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!partNumberform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Part Number <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addPartNumber')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'jobs-edit'" id="addDefect" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addDefect')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Defect</h5>
+            </div>
+            <form (ngSubmit)="addDefect()" role="form" #defectform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <textarea-focus label="Defect" required [propertyName]="defectTitle" class="form-group form-group-default required" [(ngModel)]="newDefect.defectTitle" name="defectTitle"></textarea-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!defectform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Defect <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addDefect')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'jobs-rates-add'" id="addService" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addService')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Service</h5>
+            </div>
+            <form (ngSubmit)="addService()" role="form" #serviceform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <select-focus required label="Type" [data]="serviceTypes" dataTextField="name" dataValueField="id" [propertyName]="serviceId" class="form-group form-group-default required" [(ngModel)]="newService.serviceId" name="serviceId"></select-focus>
+                            <input-focus label="Shift1 Count" inputType="number" required [propertyName]="shift1Count" class="form-group form-group-default required" [(ngModel)]="newService.shift1Count" name="shift1Count"></input-focus>
+                            <input-focus label="Shift2 Count" inputType="number" required [propertyName]="shift2Rate" class="form-group form-group-default required" [(ngModel)]="newService.shift2Count" name="shift2Count"></input-focus>
+                            <input-focus label="Shift3 Count" inputType="number" required [propertyName]="shift3Count" class="form-group form-group-default required" [(ngModel)]="newService.shift3Count" name="shift3Count"></input-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!serviceform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Service <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addService')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+<modal *permission="'jobs-edit'" id="addRework" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addRework')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Rework</h5>
+            </div>
+            <form (ngSubmit)="addWorkInstructionReWork()" role="form" #reworkform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <textarea-focus label="Name" required [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="newRework.name" name="name"></textarea-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!reworkform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Rework <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addRework')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<modal [id]="'delete' + JobServicesConfig.entityTypeName" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('delete' + JobServicesConfig.entityTypeName)">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">{{deleteText || 'Are you sure?'}}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{deleteMessage || 'Are you sure you want to delete this record?'}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button *permission="'jobs-rates-delete'" (click)="deleteServiceRecord('delete' + JobServicesConfig.entityTypeName);" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeServiceModal('delete' + JobServicesConfig.entityTypeName)" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

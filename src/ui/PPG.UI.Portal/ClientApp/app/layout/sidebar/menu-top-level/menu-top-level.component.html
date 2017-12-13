@@ -1,0 +1,12 @@
+﻿
+<a *ngIf="menuItem.text" (click)="navigate()" [class.detailed]="menuItem.alert">
+    <span class="title">{{menuItem.text}}</span>
+    <span *ngIf="menuItem.alert" class="details">{{menuItem.alert}}</span>
+    <span class="arrow" *ngIf="hasSubmenu && !menuItem.alert" [class.open]="menuItem.isExpanded"></span>
+</a>
+<span *ngIf="menuItem.text" (click)="navigate()" [ngClass]="'icon-thumbnail ' + (menuItem.routeIsActive && menuItem.iconBgClass ? menuItem.iconBgClass : '')"><i *ngIf="menuItem.icon" class="fa {{menuItem.icon}}"></i><span *ngIf="!menuItem.icon">{{menuItem.initials}}</span></span>
+<ul [@expansionChanged]="menuItem.isExpanded" *ngIf="!settingService.layout.isCollapsed && hasSubmenu && menuItem.text" class="sub-menu">
+    <li *ngFor="let submenu of menuItem.submenu" [class.active]="submenu.routeIsActive">
+        <menu-sublevel [menuItem]="submenu"></menu-sublevel>
+    </li>
+</ul>

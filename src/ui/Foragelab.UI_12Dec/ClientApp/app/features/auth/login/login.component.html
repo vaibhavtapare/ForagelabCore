@@ -1,0 +1,27 @@
+﻿<div class="login-container bg-white">
+    <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-50 m-t-30 sm-p-l-15 sm-p-r-15 sm-p-t-40">
+        <img src="../../../assets/images/logo.png" alt="logo" data-src="../../../assets/images/logo.png" data-src-retina="../../../assets/images/logo_2x.png" width="78" height="22">
+        <p class="p-t-35">Sign into PPG intelligo</p>
+        <!-- START Login Form -->
+        <form id="form-login" class="p-t-15" (ngSubmit)="login()" #loginform="ngForm">
+            <input-focus required label="Email Address" [propertyName]="emailAddress" class="form-group form-group-default required" [(ngModel)]="loginModel.emailAddress" name="emailAddress" #emailAddress></input-focus>
+            <password-focus required label="Password" [propertyName]="password" class="form-group form-group-default required" [(ngModel)]="loginModel.password" name="password"></password-focus>
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <button type="submit" class="btn btn-primary btn-cons m-t-10" [disabled]="!loginform.form.valid || submitPending">
+                        Sign In
+                        <span *ngIf="submitPending"><i class="fa fa-spinner fa-spin"></i></span>
+                    </button>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a style="display:none;" href="#" class="text-info small">Help? Contact Support</a>
+                </div>
+            </div>
+            <!-- END Form Control-->
+           
+        </form>
+        <!--END Login Form-->
+    </div>
+</div>
+
+

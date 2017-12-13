@@ -1,0 +1,13 @@
+﻿
+<form (ngSubmit)="saveAddress()" role="form" #addressform="ngForm">
+    <input-focus label="Attention" [propertyName]="attention" class="form-group form-group-default" [(ngModel)]="address.attention" name="attention"></input-focus>
+    <input-focus required label="Street Address 1" [propertyName]="streetAddress1" class="form-group form-group-default required" [(ngModel)]="address.streetAddress1" name="streetAddress1"></input-focus>
+    <input-focus label="Street Address 2" [propertyName]="streetAddress2" class="form-group form-group-default" [(ngModel)]="address.streetAddress2" name="streetAddress2"></input-focus>
+    <input-focus required label="City" [propertyName]="city" class="form-group form-group-default required" [(ngModel)]="address.city" name="city"></input-focus>
+    <select-focus required label="State" [data]="states" dataTextField="name" dataValueField="id" [propertyName]="stateId" class="form-group form-group-default required" [(ngModel)]="address.stateId" name="stateId"></select-focus>
+    <input-focus label="Postal Code" [mask]="'99999-9999'" minlength="5" maxlength="10" [propertyName]="postalCode" class="form-group form-group-default required" [(ngModel)]="address.postalCode" name="postalCode"></input-focus>
+    <button type="submit" [disabled]="!addressform.form.valid || processing" class="btn btn-primary">
+        Save Address <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+    </button> &nbsp;
+    <a *ngIf="!hideCancel" class="btn" (click)="close()">Cancel</a>
+</form>

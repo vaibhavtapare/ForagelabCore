@@ -1,0 +1,50 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="pull-left">Addresses</h3>
+            <div class="pull-right">
+                <a *permission="'addresses-add'" (click)="openModal('addAddress')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Address</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- START PANEL -->
+            <div class="panel panel-transparent" [in-progress]="addressesLoading">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        Addresses Listing
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <data-table *permission="'addresses-edit'" [data]="addresses" (select)="selectAddress($event)" [config]="addressesConfig" (refresh)="loadAddresses($event)" [pagination]="addressesPagination"></data-table>
+                </div>
+            </div>
+            <!-- END PANEL -->
+        </div>
+    </div>
+</div>
+
+<modal *permission="'addresses-add'" id="addAddress" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addAddress')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Address</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <address [(address)]="newAddress" [processing]="processing" (save)="createAddress($event)"></address>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

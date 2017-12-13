@@ -1,0 +1,3 @@
+﻿
+<a *ngIf="menuItem.text" (click)="navigate()">{{menuItem.text}}</a>
+<span *ngIf="menuItem.text" (click)="navigate()" [ngClass]="{'icon-thumbnail': true, 'bg-menu-light': menuItem.routeIsActive}"><i *ngIf="menuItem.icon" class="fa {{menuItem.icon}}"></i><span *ngIf="!menuItem.icon">{{menuItem.initials}}</span></span>

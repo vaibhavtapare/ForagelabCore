@@ -1,0 +1,73 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Address</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/jobs']">Job Listing</a>
+        </li>
+        <li *ngIf="job">
+            <a [routerLink]="['/jobs', jobId]">{{job.jobCode}}</a>
+        </li>
+        <li>
+            <a [routerLink]="['/jobs', jobId,'closure']" class="active">Job Closure</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+    <div class="row">
+        <form  role="form" #jobclosureform="ngForm">
+            <div class="col-md-12">
+                
+                <!-- START PANEL -->
+                <div class="panel panel-transparent" [in-progress]="jobClosureLoading">
+                    <div class="panel-body">
+                        <div class="pull-right">
+                            <span *ngIf="showRequest"><button (click)="requestJobClosure($event)" [disabled]="!isEnableRequest || !isAllChecked ||!jobclosureform.form.valid || processing" class="btn btn-primary"><i class="fa fa-sticky-note"></i> {{requestBtnText}}</button></span>
+                            <span *ngIf="showApprove"><button (click)="ApproveJobClosure()" class="btn btn-success"><i class="fa fa-check-square-o"></i> {{approveBtnText}}</button></span>
+                            <span *ngIf="showDecline"><button (click)="DeclineJobClosure()" class="btn btn-danger"><i class="fa fa-ban"></i> {{declineBtnText}}</button></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        Summary
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div>
+                                        <input required type="checkbox" id="1" [checked]="jobClosure.documentsCollected" (change)="toggleCheckListCheck($event)"  /> Collect all PPG documents for file retention <br />
+                                        <input required type="checkbox" id="2" [checked]="jobClosure.boundrySamplesReturned" (change)="toggleCheckListCheck($event)" /> Return all boundary samples to the customer <br />
+                                        <input required type="checkbox" id="3" [checked]="jobClosure.boundriesRemoved" (change)="toggleCheckListCheck($event)" /> Remove any tapes, signs, temporary boundaries from area <br />
+                                        <input required type="checkbox" id="4" [checked]="jobClosure.areaCleaned" (change)="toggleCheckListCheck($event)" /> Clean and 5S the work area <br />
+                                        <input required type="checkbox" id="5" [checked]="jobClosure.ppgMaterialsCollected" (change)="toggleCheckListCheck($event)" /> Collect any materias and supplies that belong to PPG <br />
+                                        <input required type="checkbox" id="6" [checked]="jobClosure.clientFixturesReturned" (change)="toggleCheckListCheck($event)" /> Return any fixtures or gauges issued by the customer <br />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        Lesson Learned
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div>
+                                        <textarea-focus required label="What could have been done to make this project more efficient?" [propertyName]="efficiencySuggestions" class="form-group form-group-default required" [(ngModel)]="jobClosure.efficiencySuggestions" name="efficiencySuggestions"></textarea-focus>
+                                        <textarea-focus required label="What did we do well on this project?" [propertyName]="areasDoneWell" class="form-group form-group-default required" [(ngModel)]="jobClosure.areasDoneWell" name="areasDoneWell"></textarea-focus>
+                                        <textarea-focus required label="What could we improve on during this project?" required [propertyName]="areasNeedingImprovement" class="form-group form-group-default required" [(ngModel)]="jobClosure.areasNeedingImprovement" name="areasNeedingImprovement"></textarea-focus>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END PANEL -->
+            </div>
+        </form>
+</div>
+</div>

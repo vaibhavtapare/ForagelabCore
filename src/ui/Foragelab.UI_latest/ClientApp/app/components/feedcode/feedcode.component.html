@@ -1,0 +1,15 @@
+﻿
+
+
+<h1>FeedCode Grid</h1>
+<div class="container-fluid container-fixed-lg bg-white">
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel-body">
+            <data-table [data]="feedcodes" [config]="clientsConfig" (refresh)="loadFeedCodes($event)" ></data-table>
+        </div>
+    </div>
+</div>
+</div>
+
+

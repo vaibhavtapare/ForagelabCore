@@ -1,0 +1,13 @@
+﻿
+<form (ngSubmit)="saveJob()" role="form" #jobform="ngForm">
+    <select-focus [isDisabled]="isclientDisabled" (change)="loadLocations()" *ngIf="!client && !location && !isclientHide" required label="Client" [data]="clients" dataTextField="name" dataValueField="id" [propertyName]="clientId" class="form-group form-group-default required" [(ngModel)]="job.clientId" name="clientId"></select-focus>
+    <select-focus *ngIf="!location" [isDisabled]="iscontactDisabled" required label="Location" [data]="locations" dataTextField="name" dataValueField="id" [propertyName]="locationId" class="form-group form-group-default required" [(ngModel)]="job.locationId" name="locationId"></select-focus>
+
+    <select-focus required label="Type" [data]="jobTypes" dataTextField="name" dataValueField="id" [propertyName]="jobTypeId" class="form-group form-group-default required" [(ngModel)]="job.jobTypeId" name="jobTypeId"></select-focus>
+
+    <textarea-focus label="Description" [propertyName]="description" class="form-group form-group-default" [(ngModel)]="job.description" name="description"></textarea-focus>
+    <button type="submit" [disabled]="!jobform.form.valid || processing" class="btn btn-primary">
+        Save Job <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+    </button> &nbsp;
+    <a *ngIf="!hideCancel" class="btn" (click)="close()">Cancel</a>
+</form>

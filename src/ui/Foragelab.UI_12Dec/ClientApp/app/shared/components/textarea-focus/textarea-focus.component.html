@@ -1,0 +1,5 @@
+﻿
+
+<label [ngClass]="{'fade': hasValue}">{{label}}</label>
+<textarea #inputElement rows="5" [name]="propertyName" [disabled]="disabled" [placeholder]="placeholder" class="form-control" [(ngModel)]="value" (focus)="onFocus()" (blur)="onBlur()"></textarea>
+

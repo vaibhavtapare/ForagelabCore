@@ -1,0 +1,80 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Add Employee</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/employees']">Employees</a>
+        </li>
+        <li *ngIf="employee">
+            <a [routerLink]="['/employees/add']" class="active">Add Employee</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm"><div class="cs-select cs-skin-slide full-width" tabindex="0"><span class="cs-placeholder">Hello World</span><div class="cs-options"><ul><li data-option="" data-value="#home"><span>Hello World</span></li><li data-option="" data-value="#profile"><span>Hello Two</span></li><li data-option="" data-value="#messages"><span>Hello Three</span></li></ul></div><select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select"><option value="#home" selected="">Hello World</option><option value="#profile">Hello Two</option><option value="#messages">Hello Three</option></select><div class="cs-backdrop"></div></div></div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation">
+                <form (ngSubmit)="saveEmployee()" role="form" #employeeaddform="ngForm">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Contact Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <input-focus required label="First Name" [propertyName]="firstName" class="form-group form-group-default required" [(ngModel)]="employee.firstName" name="firstName"></input-focus>
+                                <input-focus required label="Last Name" [propertyName]="lastName" class="form-group form-group-default required" [(ngModel)]="employee.lastName" name="lastName"></input-focus>
+                                <input-focus [mask]="'(999) 999-9999'" label="Home Phone" [propertyName]="homePhoneNumber" class="form-group form-group-default" [(ngModel)]="employee.homePhoneNumber" name="homePhoneNumber"></input-focus>
+                                <input-focus [mask]="'(999) 999-9999'" label="Mobile Phone" [propertyName]="mobilePhoneNumber" class="form-group form-group-default" [(ngModel)]="employee.mobilePhoneNumber" name="mobilePhoneNumber"></input-focus>
+                                <input-focus label="Personal Email Address" [placeholder]="'Not a @ppgquality.com location'" [propertyName]="emailAddress" class="form-group form-group-default" [(ngModel)]="employee.emailAddress" name="emailAddress"></input-focus>
+                                <button type="submit" [disabled]="!employeeaddform.form.valid || processing" class="btn btn-primary">
+                                    Add Employee
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/employees'])">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Corporate Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <select-focus required label="Type" [data]="employeeTypes" dataTextField="name" dataValueField="id" [propertyName]="employeeTypeId" class="form-group form-group-default required" [(ngModel)]="employee.employeeTypeId" name="employeeTypeId"></select-focus>
+                                <select-focus required label="Status" [data]="employeeStatuses" dataTextField="name" dataValueField="id" [propertyName]="employeeStatusId" class="form-group form-group-default required" [(ngModel)]="employee.employeeStatusId" name="employeeStatusId"></select-focus>
+                                <input-focus [mask]="'999-99-9999'" required label="Social Security Number" [propertyName]="ssn" class="form-group form-group-default required" [(ngModel)]="employee.ssn" name="ssn"></input-focus>
+                                <input-focus label="Alias" [propertyName]="alias" class="form-group form-group-default" [(ngModel)]="employee.alias" name="alias"></input-focus>
+                                <input-focus label="Title" [propertyName]="title" class="form-group form-group-default" [(ngModel)]="employee.title" name="title"></input-focus>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

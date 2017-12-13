@@ -1,0 +1,170 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Address</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/admin/addresses']">Addresses</a>
+        </li>
+        <li *ngIf="address">
+            <a [routerLink]="['/admin/addresses', address.id]" class="active">Edit Address</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#riskassessment" aria-expanded="true"><span>Risk Assessments</span></a>
+        </li>
+        <li *permission="'addresses-delete'" class="">
+            <a data-toggle="tab" href="#archive" aria-expanded="false"><span>Archive</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                    <li data-option="" data-value="#riskassessment">
+                        <span>Risk Assessments</span>
+                    </li>
+                    <li *permission="'addresses-delete'" data-option="" data-value="#archive">
+                        <span>Archive</span>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+                <option value="#riskassessment" selected="">Risk Assessments</option>
+                <option *permission="'addresses-delete'" value="#archive">Archive</option>
+            </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation">
+                <form (ngSubmit)="saveAddress()" role="form" #addressform="ngForm">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Address Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+
+                                <input-focus label="Attention" [propertyName]="attention" class="form-group form-group-default" [(ngModel)]="address.attention" name="attention"></input-focus>
+                                <input-focus required label="Street Address 1" [propertyName]="streetAddress1" class="form-group form-group-default required" [(ngModel)]="address.streetAddress1" name="streetAddress1"></input-focus>
+                                <input-focus label="Street Address 2" [propertyName]="streetAddress2" class="form-group form-group-default" [(ngModel)]="address.streetAddress2" name="streetAddress2"></input-focus>
+                                <input-focus required label="City" [propertyName]="city" class="form-group form-group-default required" [(ngModel)]="address.city" name="city"></input-focus>
+                                <select-focus required label="State" [data]="states" dataTextField="name" dataValueField="id" [propertyName]="stateId" class="form-group form-group-default required" [(ngModel)]="address.stateId" name="stateId"></select-focus>
+                                <input-focus label="Postal Code" [propertyName]="postalCode" class="form-group form-group-default required" [(ngModel)]="address.postalCode" name="postalCode"></input-focus>
+                                <button type="submit" [disabled]="!addressform.form.valid || processing" class="btn btn-primary">
+                                    Save Address <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/admin/addresses'])">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div *permission="'addresses'" class="tab-pane" id="riskassessment">
+            <div class="row column-seperation">
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Risk Assessments
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <div class="row">
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div *permission="'addresses-delete'" class="tab-pane" id="archive">
+            <div class="row column-seperation">
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Archive Address
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>&nbsp;</p>
+                                    <p><b>Archiving an Address.</b></p>
+                                    <p>&nbsp;</p>
+                                    <button (click)="openModal('deleteAddress')" type="submit" [disabled]="processing" class="btn btn-danger">
+                                        Archive Address
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal *permission="'addresses-delete'" id="deleteAddress" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('deleteAddress')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to delete the address.</p>
+                        <p><b class="text-danger">Reminder:</b> Deleting address cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="deleteAddress();" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('deleteAddress')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

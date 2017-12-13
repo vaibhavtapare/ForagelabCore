@@ -30,4 +30,5 @@ namespace Foragelab.Core.DataModel
         public AspnetApplications Application { get; set; }
         public AspnetUsers User { get; set; }
     }
+   
 }

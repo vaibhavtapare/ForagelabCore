@@ -30,8 +30,8 @@ namespace Foragelab.API
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = @"Server = PEEYUSH_AGRAWAL; UID = sa; password = clarion; Initial Catalog = CVAS; MultipleActiveResultSets = true;";
-            services.AddDbContext<CVASContext>(options => options.UseSqlServer(connection));          
-
+            services.AddDbContext<CVASContext>(options => options.UseSqlServer(connection));
+            services.AddCors(); 
             services.AddMvc();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<IFeedCodeServices, FeedCodeServices>(); 
@@ -45,7 +45,7 @@ namespace Foragelab.API
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors(options => options.WithOrigins("http://localhost:58069").AllowAnyMethod());
             app.UseMvc();
         }
     }

@@ -1,0 +1,392 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Work Instruction</h3>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="workinstruction && job" class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/jobs/',workinstruction.jobId]">Job {{job.jobCode}}</a>
+        </li>
+        <li>
+            <a [routerLink]="['/jobs/',workinstruction.jobId,'/work-instructions/', workinstruction.id]" class="active">Revision #{{workinstruction.revision}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#details" aria-expanded="false"><span>Details</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#steps" aria-expanded="false"><span>Steps</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#timeline" aria-expanded="false"><span>Timeline</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#riskassessments" aria-expanded="false"><span>Risk Assessments</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                    <li data-option="" data-value="#details">
+                        <span>Details</span>
+                    </li>
+                    <li data-option="" data-value="#steps">
+                        <span>Steps</span>
+                    </li>
+                    <li data-option="" data-value="#timeline">
+                        <span>Timeline</span>
+                    </li>
+                    <li data-option="" data-value="#riskassessments">
+                        <span>Risk Assessments</span>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+                <option value="#partNumbers">Part Numbers</option>
+                <option value="#steps">Steps</option>
+                <option value="#details">Details</option>
+                <option value="#timeline">Timeline</option>
+                <option value="#riskassessments">Risk Assessments</option>
+            </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation" [in-progress]="cloneWorkInstructionLoading">
+                <div class="panel col-md-12">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Overview
+                        </div>
+                        <div class="pull-right">
+                            <span><button [disabled]="true" class="btn btn-primary"><i class="fa fa-pencil"></i> Pending Approval</button></span>
+                            <span *ngIf="!isAnyDraftWorkInstruction"><button *permission="'workinstructions-clone'" (click)="cloneWorkInstruction()" class="btn btn-primary"><i class="fa fa-clone"></i> Clone Instructions</button></span>
+                            <span *ngIf="isDraftWorkInstructionStatus"><button *permission="'workinstructions-edit'" (click)="workInstructionRequest()" class="btn btn-primary"><i class="fa fa-sticky-note"></i> Request Approval</button></span>
+                            <span *ngIf="isRequestedWorkInstructionStatus"><button *permission="'workinstructions-approval'" (click)="workInstructionApprove()" class="btn btn-primary"><i class="fa fa-check-square-o"></i> Approve</button></span>
+                            <span *ngIf="isRequestedWorkInstructionStatus"><button *permission="'workinstructions-approval'" (click)="workInstructionDecline()" class="btn btn-primary"><i class="fa fa-ban"></i> Decline</button></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <input-focus label="Revision" [propertyName]="revision" class="form-group form-group-default" disabled="true" [(ngModel)]="workinstruction.revision" name="revision"></input-focus>
+                            <input-focus label="Status" [propertyName]="workInstructionStatusId" class="form-group form-group-default" disabled="true" [(ngModel)]="workInstructionStatus" name="workInstructionStatusId"></input-focus>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Documents
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="cloneWorkInstructionLoading">
+                            <ul style="list-style-type: none;" *ngFor="let document of workInstructionDocuments"><li><a (click)="fetchDocument(document)">{{document.documentName}}</a></li></ul>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="details">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Job Details
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="jobDefectsLoading">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="panel-heading">
+                                        <div class="panel-title pull-left">
+                                            Part Numbers
+                                        </div>
+                                        <div class="pull-right">
+                                            <a *permission="'jobs-edit'" (click)="openModal('addPartNumber')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Part Number</a>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="workInstructionPartNumbers" [in-progress]="workInstructionPartNumbersLoading">
+                                        <data-table allowDelete="true" [data]="workInstructionPartNumbers" (delete)="deletePartNumber($event)" deleteTitle="Are you sure?" deleteMessage="Are you sure you want to delete the part number?" [config]="workInstructionPartNumbersConfig" (refresh)="loadPartNumbers($event)" [pagination]="workInstructionPartNumbersPagination"></data-table>
+                                    </div>
+                                </div>
+                                <div *ngIf="showDefect" class="col-md-4">
+                                    <div class="panel-heading">
+                                        <div class="panel-title pull-left">
+                                            Defects
+                                        </div>
+                                        <div class="pull-right">
+                                            <a *permission="'jobs-edit'" (click)="openModal('addDefect')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Defect</a>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="jobDefects" [in-progress]="jobDefectsLoading">
+                                        <data-table allowDelete="true" [data]="jobDefects" (delete)="deleteDefect($event)" deleteTitle="Are you sure?" deleteMessage="Are you sure you want to delete the defect?" [config]="jobDefectsConfig" (refresh)="loadDefects($event)" [pagination]="jobDefectPagination"></data-table>
+                                    </div>
+                                </div>
+                                <div *ngIf="showRework" class="col-md-4">
+                                    <div class="panel-heading">
+                                        <div class="panel-title pull-left">
+                                            Rework
+                                        </div>
+                                        <div class="pull-right">
+                                            <a *permission="'jobs-edit'" (click)="openModal('addRework')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Rework</a>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="workInstructionReworks" [in-progress]="workInstructionReworkLoading">
+                                        <data-table allowDelete="true" [data]="workInstructionReworks" (delete)="deleteWorkInstructionRework($event)" deleteTitle="Are you sure?" deleteMessage="Are you sure you want to delete the rework?" [config]="workInstructionReworkConfig" (refresh)="loadWorkIstructionRework($event)" [pagination]="workInstructionReworkPagination"></data-table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="steps">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Work Instruction Steps
+                            </div>
+                            <div class="pull-right">
+                                <a *permission="'workinstructions-edit'" (click)="openModal('addStep')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Step</a>
+                            </div>
+                        </div>
+
+                        <!--<div [in-progress]="workInstructionStepsLoading">
+                            <data-table allowDelete="true" [data]="workInstructionSteps" (delete)="deleteStep($event)" deleteTitle="Are you sure?" deleteMessage="Are you sure you want to delete the step?" [config]="workInstructionStepsConfig" (refresh)="loadSteps($event)" [pagination]="workInstructionStepPagination"></data-table>
+                        </div>-->
+                        <div class="panel-body" [in-progress]="workInstructionStepsLoading">
+                            <div>
+                                <div class='wrapper'>
+                                    <div *ngIf="workInstructionSteps" class='container' [dragula]='"bag-task1"'>
+                                        <div *ngFor="let step of workInstructionSteps" [attr.data-id]="step.id" [attr.data-sequence]="step.sequence">
+                                            <a [routerLink]="['/jobs', job.id, 'work-instructions', workinstruction.id, 'steps', step.id]">{{step.description}}</a>
+                                            <button name="d" (click)="deleteStep(step)" class="btn btn-danger pull-right">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="timeline">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Timeline
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="transactionsProcessing">
+                            <timeline [(isLoading)]="transactionsLoading" [(data)]="transactions" (refresh)="loadTransactions($event)" [(pagination)]="transactionPagination"></timeline>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="riskassessments">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Risk Assessments
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="riskassessmentsLoading">
+                            <data-table [data]="riskAssessments" [config]="riskassessmentsConfig" (refresh)="loadRiskAssessments($event)" [pagination]="riskassessmentsPagination"></data-table>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal *permission="'workinstructions-edit'" id="addPartNumber" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addPartNumber')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Part Number</h5>
+            </div>
+            <form (ngSubmit)="addPartNumber()" role="form" #partNumberform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <input-focus label="Part Number" required [propertyName]="partNumber" class="form-group form-group-default required" [(ngModel)]="newPartNumber.partNumber" name="partNumber"></input-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!partNumberform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Part Number <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addPartNumber')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'workinstructions-edit'" id="addDefect" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addDefect')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Defect</h5>
+            </div>
+            <form (ngSubmit)="addDefect()" role="form" #defectform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <textarea-focus label="Defect" required [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="newDefect.name" name="name"></textarea-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!defectform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Defect <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addDefect')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'workinstructions-edit'" id="addStep" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addStep')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Step</h5>
+            </div>
+            <form (ngSubmit)="addStep()" role="form" #stepform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <textarea-focus label="Description" required [propertyName]="Description" class="form-group form-group-default required" [(ngModel)]="newStep.description" name="stepDescription"></textarea-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!stepform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Step <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addStep')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'workinstructions-edit'" id="addRework" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addRework')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Rework</h5>
+            </div>
+            <form (ngSubmit)="addWorkInstructionReWork()" role="form" #reworkform="ngForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <textarea-focus label="Name" required [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="newRework.name" name="name"></textarea-focus>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-4">
+                            <button type="submit" [disabled]="!reworkform.valid || processing" class="btn btn-danger btn-block m-t-5">
+                                Save Rework <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-4">
+                            <button (click)="closeModal('addRework')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</modal>

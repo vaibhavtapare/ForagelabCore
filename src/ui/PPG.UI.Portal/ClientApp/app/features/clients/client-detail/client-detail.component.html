@@ -1,0 +1,339 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Client</h3>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="client" class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/clients']">Client Listing</a>
+        </li>
+        <li *ngIf="client">
+            <a [routerLink]="['/clients', client.id]" class="active">{{client.name}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#profile" aria-expanded="false"><span>Profile</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#location" aria-expanded="false"><span>Locations</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#job" aria-expanded="false"><span>Jobs</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#contact" aria-expanded="false"><span>Contacts</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#timeline" aria-expanded="false"><span>Timeline</span></a>
+        </li>
+        <li *permission="'clients-delete'" class="">
+            <a data-toggle="tab" href="#archive" aria-expanded="false"><span>Archive</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                    <li data-option="" data-value="#profile">
+                        <span>Profile</span>
+                    </li>
+                    <li data-option="" data-value="#location">
+                        <span>Locations</span>
+                    </li>
+                    <li data-option="" data-value="#job">
+                        <span>Jobs</span>
+                    </li>
+                    <li data-option="" data-value="#contact">
+                        <span>Contacts</span>
+                    </li>
+                    <li data-option="" data-value="#timeline">
+                        <span>Timeline</span>
+                    </li>
+                    <li *permission="'clients-delete'" data-option="" data-value="#archive">
+                        <span>Archive</span>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+                <option value="#profile">Profile</option>
+                <option value="#location">Locations</option>
+                <option value="#job">Jobs</option>
+                <option value="#contact">Contacts</option>
+                <option value="#timeline">Timeline</option>
+                <option *permission="'clients-delete'" value="#archive">Archive</option>
+            </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation">
+               
+            </div>
+        </div>
+        <div class="tab-pane" id="profile">
+            <div class="row">
+                <form (ngSubmit)="saveClient()" role="form" #clientaddform="ngForm">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Profile Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <input-focus required label="Name" [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="client.name" name="name"></input-focus>
+                                <input-focus required label="Alias" [propertyName]="alias" class="form-group form-group-default required" [(ngModel)]="client.alias" name="alias"></input-focus>
+                                <input-focus [mask]="'(999) 999-9999 99'" maxlength="17" minlength="17" required label="Corporate Phone" [propertyName]="phoneNumber" class="form-group form-group-default required" [(ngModel)]="client.phoneNumber" name="phoneNumber"></input-focus>
+                                <input-focus [mask]="'(999) 999-9999 99'" maxlength="17" minlength="17" label="Corporate Fax" [propertyName]="faxNumber" class="form-group form-group-default" [(ngModel)]="client.faxNumber" name="faxNumber"></input-focus>
+                                <input-focus label="Website" placeholder="http://..." [propertyName]="website" class="form-group form-group-default" [(ngModel)]="client.website" name="website"></input-focus>
+                                <button type="submit" [disabled]="!clientaddform.form.valid || processing" class="btn btn-primary">
+                                    Save Client
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/clients'])">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <select-focus *ngIf="allAddresses" required label="Corporate Address" [data]="allAddresses" dataTextField="condensedName" dataValueField="id" [propertyName]="corporateAddressId" class="form-group form-group-default required" [(ngModel)]="client.corporateAddressId" name="corporateAddressId"></select-focus>
+                                <select-focus *ngIf="arTerms" required label="AR Terms" [data]="arTerms" dataTextField="name" dataValueField="id" [propertyName]="arTermsId" class="form-group form-group-default required" [(ngModel)]="client.arTermsId" name="arTermsId"></select-focus>
+                                <select-focus *ngIf="allAddresses" required label="Billing Address" [data]="allAddresses" dataTextField="condensedName" dataValueField="id" [propertyName]="billingAddressId" class="form-group form-group-default required" [(ngModel)]="client.billingAddressId" name="billingAddressId"></select-focus>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="tab-pane" id="location">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="locationsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Location Listing
+                            </div>
+                            <div class="pull-right">
+                                <a *permission="'locations-add'" (click)="openModal('addLocation')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Location</a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <data-table [data]="locations" [config]="locationsConfig" (refresh)="loadLocations($event)" [pagination]="locationsPagination"></data-table>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="job">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="jobsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Job Listing
+                            </div>
+                            <div class="pull-right">
+                                <a *permission="'jobs-add'"  (click)="openModal('addJob')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Job</a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <data-table [data]="jobs" [config]="jobsConfig" (refresh)="loadJobs($event)" [pagination]="jobsPagination"></data-table>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="contact">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-transparent" [in-progress]="contactsLoading">
+                        <div class="panel-heading">
+                            <div class="panel-title pull-left">
+                                Contact Listing
+                            </div>
+                            <div class="pull-right">
+                                <a *permission="'contacts-add'" (click)="openModal('addContact')" class="btn btn-primary"><i class="fa fa-plus"></i> Add Contact</a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <data-table [data]="contacts" [config]="contactsConfig"  (refresh)="loadContacts($event)" [pagination]="contactsPagination"></data-table>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="timeline">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Timeline
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <timeline [(isLoading)]="transactionsLoading" [(data)]="transactions" (refresh)="loadTransactions($event)" [(pagination)]="transactionPagination"></timeline>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *permission="'clients-delete'" class="tab-pane" id="archive">
+            <div class="row column-seperation">
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Archive {{client.ame}}
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>&nbsp;</p>
+                                    <p><b class="text-danger">Archiving a client will deactivate their employee's user accounts in the portal.</b></p>
+                                    <p>&nbsp;</p>
+                                    <button (click)="openModal('archiveClient')" type="submit" [disabled]="processing" class="btn btn-danger">
+                                        Archive Client
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal *permission="'clients-delete'" id="archiveClient" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('archiveClient')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to archive {{client.name}}.</p>
+                        <p><b class="text-danger">Reminder:</b> Archiving a client will deactivate any user accounts for their employees.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="archiveClient();" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('archiveClient')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'locations-add'" id="addLocation" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addLocation')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Location</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <location [(location)]="newLocation" [addresses]="allAddresses" [processing]="processing" (save)="saveLocation($event)"></location>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'contacts-add'" id="addContact" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addContact')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Contact</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <contact [(contact)]="newContact" [locations]="allLocations" [processing]="processing" (save)="createContact($event)"></contact>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'jobs-add'" id="addJob" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('addJob')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Add Job</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <job-add [client]="client" [locations]="locations" [(job)]="newJob" [processing]="processing" (save)="createJob($event)"></job-add>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

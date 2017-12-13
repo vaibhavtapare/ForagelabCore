@@ -1,0 +1,64 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Add Client</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/clients']">Client Listing</a>
+        </li>
+        <li>
+            <a [routerLink]="['/clients/add']" class="active">Add Client</a>
+        </li>
+    </ul>
+</div>
+
+
+<div class="container-fluid container-fixed-lg bg-white">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm"><div class="cs-select cs-skin-slide full-width" tabindex="0"><span class="cs-placeholder">Hello World</span><div class="cs-options"><ul><li data-option="" data-value="#home"><span>Hello World</span></li><li data-option="" data-value="#profile"><span>Hello Two</span></li><li data-option="" data-value="#messages"><span>Hello Three</span></li></ul></div><select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select"><option value="#home" selected="">Hello World</option><option value="#profile">Hello Two</option><option value="#messages">Hello Three</option></select><div class="cs-backdrop"></div></div></div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation">
+                <form (ngSubmit)="saveClient()" role="form" #clientaddform="ngForm">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Client Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <input-focus required label="Name" [propertyName]="name" class="form-group form-group-default required" [(ngModel)]="client.name" name="name"></input-focus>
+                                <input-focus required label="Alias" [propertyName]="alias" class="form-group form-group-default required" [(ngModel)]="client.alias" name="alias"></input-focus>
+                                <select-focus required label="AR Terms" [data]="arTerms" dataTextField="name" dataValueField="id" [propertyName]="arTermsId" class="form-group form-group-default required" [(ngModel)]="client.arTermsId" name="arTermsId"></select-focus>
+                                <input-focus [mask]="'(999) 999-9999 99'" maxlength="17" minlength="17" required label="Corporate Phone" [propertyName]="phoneNumber" class="form-group form-group-default required" [(ngModel)]="client.phoneNumber" name="phoneNumber"></input-focus>
+                                <input-focus [mask]="'(999) 999-9999 99'"maxlength="17" minlength="17" label="Corporate Fax" [propertyName]="faxNumber" class="form-group form-group-default" [(ngModel)]="client.faxNumber" name="faxNumber"></input-focus>
+                                <input-focus label="Website" placeholder="http://..." [propertyName]="website" class="form-group form-group-default" [(ngModel)]="client.website" name="website"></input-focus>
+                                <button type="submit" [disabled]="!clientaddform.form.valid || processing" class="btn btn-primary">
+                                    Add Client
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/clients'])">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

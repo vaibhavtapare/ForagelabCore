@@ -1,0 +1,69 @@
+﻿<div class="dataTables_wrapper form-inline no-footer">
+    <div>
+        <table class="table dataTable no-footer" [ngClass]="{'table-hover': hoverRows, 'table-condensed': condenseRows, 'table-striped': stripedRows}" role="grid">
+            <thead>
+                <tr role="row">
+                    <th *ngFor="let column of config.columns" (click)="setSort(column)" [ngClass]="{'sorting': ((config.sortColumn != column.propertyName) && column.allowSorting), 'sorting-asc': (column.allowSorting && config.sortColumn == column.propertyName && config.sortDirection == 0), 'sorting-desc': (column.allowSorting && config.sortColumn == column.propertyName && config.sortDirection == 1) }" rowspan="1" colspan="1">{{column.columnHeader}}</th>
+                    <th *ngIf="allowDelete" class="v-align-middle"></th> 
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let record of data;let i = index" role="row" [ngClass]="{'even': i % 2 != 0, 'odd': i % 2 == 0}">
+                    <td *ngFor="let column of config.columns" class="v-align-middle">
+                        <a *ngIf="column.routerLink" [routerLink]="column.routerLink(record)">
+                            <span *ngIf="column.formatter">{{column.formatter(record)}}</span>
+                            <span *ngIf="!column.formatter">{{record[column.propertyName]}}</span>
+                        </a>
+                        <a *ngIf="!column.routerLink && column.allowSelect" (click)="selectRecord(record)">
+                            <span *ngIf="column.formatter">{{column.formatter(record)}}</span>
+                            <span *ngIf="!column.formatter">{{record[column.propertyName]}}</span>
+                        </a>
+                        <span *ngIf="!column.allowSelect && !column.routerLink && column.formatter">{{column.formatter(record)}}</span>
+                        <span *ngIf="!column.allowSelect && !column.routerLink && !column.formatter && !column.allowDownloadFile">{{record[column.propertyName]}}</span>
+                        <a *ngIf="column.allowDownloadFile" (click)="downloadFile(record)">{{record[column.propertyName]}}</a>
+                        
+                    </td>
+                    <td *ngIf="allowDelete" class="v-align-middle">
+                        <button name="d" (click)="openModal('delete' + config.entityTypeName, record)" class="btn btn-danger">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row" *ngIf="pagination">
+        <pagination-summary *ngIf="config.showPaging" [config]="config" [pagination]="pagination"></pagination-summary>
+        <pagination *ngIf="config.showPager" (refresh)="refreshGrid($event)" [pagination]="pagination"></pagination>
+    </div>
+</div>
+
+
+<modal [id]="'delete' + config.entityTypeName" class="modal fade" role="dialog" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('delete' + config.entityTypeName)">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">{{deleteText || 'Are you sure?'}}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{deleteMessage || 'Are you sure you want to delete this record?'}}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="deleteRecord('delete' + config.entityTypeName);" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('delete' + config.entityTypeName)" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

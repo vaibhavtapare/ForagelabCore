@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Foragelab.Core.DataModel\Foragelab.Core.DataModel.csproj" />
     <ProjectReference Include="..\Foragelab.Core.Entities\Foragelab.Core.Entities.csproj" />
+    <ProjectReference Include="..\Foragelab.Core.Results\Foragelab.Core.Results.csproj" />
   </ItemGroup>
 
 </Project>

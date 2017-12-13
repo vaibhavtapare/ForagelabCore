@@ -1,0 +1,14 @@
+﻿
+<div class="pgn-wrapper" data-position="top-right">
+    <div [@visibilityChanged] *ngFor="let notice of notifications; let i = index" class="pgn pgn-bar">
+        <div class="alert alert-{{notice.type}}">
+            <button type="button" class="close" (click)="closeNotice(i)">
+                <span aria-hidden="true">×</span>
+                <span class="sr-only">Close</span>
+            </button>
+            <span>
+                {{notice.message}}
+            </span>
+        </div>
+    </div>
+</div>

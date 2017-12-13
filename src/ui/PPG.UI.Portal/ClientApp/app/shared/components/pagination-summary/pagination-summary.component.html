@@ -1,0 +1,4 @@
+﻿
+<div *ngIf="pagination" class="col-xs-12 col-sm-6 dataTables_info" role="status" aria-live="polite">
+    Showing <b>{{pagination.startingRecordNumber | number}} to {{pagination.endingRecordNumber | number}}</b> of {{pagination.totalCount | number}} {{config.entityTypeName}}
+</div>

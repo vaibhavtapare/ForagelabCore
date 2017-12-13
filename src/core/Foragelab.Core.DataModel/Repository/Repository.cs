@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Foragelab.Core.DataModel.Repository
 {
@@ -21,6 +23,11 @@ namespace Foragelab.Core.DataModel.Repository
         {
             Context.Set<T>().Add(entity);
             Save();
+        }
+
+        public virtual async Task<T> FindAsync(Expression<Func<T, bool>> match)
+        {
+            return await Context.Set<T>().SingleOrDefaultAsync(match);
         }
 
         public T Get<TKey>(TKey id)

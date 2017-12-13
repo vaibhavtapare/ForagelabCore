@@ -1,0 +1,71 @@
+﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <IsPackable>false</IsPackable>
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <AssemblyName>PPG.UI.Portal</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Files not to show in IDE -->
+    <None Remove="ClientApp\app\features\admin\address\address-detail\address-detail.component.ts" />
+    <None Remove="ClientApp\app\features\admin\address\address.component.ts" />
+    <None Remove="ClientApp\app\core\services\process-audit.service.ts" />
+    <None Remove="ClientApp\app\features\jobs\job-closure\job-closure.component.ts" />
+    <None Remove="ClientApp\app\shared\models\client-holidays.model.ts" />
+    <None Remove="ClientApp\app\shared\models\client-shift.model.ts" />
+    <None Remove="ClientApp\app\shared\models\risk-assessment-question.model.ts" />
+    <None Remove="ClientApp\app\shared\models\risk-assessment.model.ts" />
+    <None Remove="ClientApp\app\shared\models\workplace-risk-assessment-question.model.ts" />
+    <None Remove="ClientApp\app\shared\models\workplace-risk-assessment-response.model.ts" />
+    <None Remove="ClientApp\app\shared\models\workplace-risk-assessment.model.ts" />
+    <None Remove="yarn.lock" />
+    <Compile Remove="ClientApp\app\features\jobs\quote\**" />
+
+    <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
+    <Content Remove="ClientApp\**" />
+    <EmbeddedResource Remove="ClientApp\app\features\jobs\quote\**" />
+    <None Remove="ClientApp\app\features\jobs\quote\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ClientApp\dist\vendor-manifest.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\api\Foragelab.API\Foragelab.API.csproj" />
+    <ProjectReference Include="..\..\core\Foragelab.Core.DataModel\Foragelab.Core.DataModel.csproj" />
+    <ProjectReference Include="..\..\core\Foragelab.Core.Entities\Foragelab.Core.Entities.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\features\jobs\job-closure\job-closure.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\client-holidays.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\client-shift.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\admin\address\address-detail\address-detail.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\features\admin\address\address.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\core\services\process-audit.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\process-audit-question-response.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\risk-assessment-question.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\risk-assessment.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\workplace-risk-assessment-question.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\workplace-risk-assessment-response.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\models\workplace-risk-assessment.model.ts" />
+  </ItemGroup>
+  <Target Name="RunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec Command="npm install --quiet" />
+    <Exec Command="node node_modules/webpack/bin/webpack.js --config webpack.config.css.js --env.prod" />
+    <Exec Command="node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod" />
+    <Exec Command="node node_modules/webpack/bin/webpack.js --env.prod" />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="wwwroot\dist\**; ClientApp\dist\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+</Project>

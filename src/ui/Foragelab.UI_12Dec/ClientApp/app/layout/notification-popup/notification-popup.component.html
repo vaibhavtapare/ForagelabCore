@@ -1,0 +1,45 @@
+﻿<ul *ngIf="1==1" class="notification-list no-margin hidden-sm hidden-xs b-grey b-l b-r no-style p-l-30 p-r-20">
+    <li class="p-r-15 inline">
+        <div class="dropdown">
+            <a href="javascript:;" id="notification-center" class="icon-set globe-fill" data-toggle="dropdown" >
+                <span *ngIf="hasUnread" class="bubble"></span>
+            </a>
+            <!-- START Notification Dropdown -->
+            <div class="dropdown-menu notification-toggle" role="menu" aria-labelledby="notification-center">
+                <!-- START Notification -->
+                <div class="notification-panel">
+                    <!-- START Notification Body-->
+                    <div class="notification-body scrollable">
+                        <!-- START Notification Item-->
+                        <div *ngFor="let transaction of transactions" class="notification-item clearfix" [ngClass]="{'unread': !transaction.isRead}">
+                            <div class="heading">
+                                <a (click)="routeNotification(transaction)" class="pull-left {{transaction.isRead == false ? transaction.taskstatusClass : ''}}" [class.text-danger]="transaction.isEscalated">
+                                    <i class="fa" [ngClass]="transaction.iconClass">&nbsp;</i>
+                                    <span [ngClass]="{'bold': !transaction.isRead}">{{transaction.description}}</span>
+                                    <!--<span class="fs-12 m-l-10">Take Action</span>-->
+                                </a>
+                                <span class="pull-right time">{{transaction.transactionDate | timeAgo}}</span>
+                            </div>
+                            <!-- START Notification Item Right Side-->
+                            <div class="option" [ngClass]="{'bg-danger-lighter': transaction.isEscalated}">
+                                <a (click)="markTransactionAsRead(transaction)" class="mark" [ngClass]="{'text-danger': transaction.isEscalated}"></a>
+                            </div>
+                            <!-- END Notification Item Right Side-->
+                        </div>
+                        <!-- END Notification Item-->
+                    </div>
+                    <!-- END Notification Body-->
+                    <!-- START Notification Footer-->
+                    <div class="notification-footer text-center">
+                        <a *ngIf="transactions.length == 0">You have no notifications.</a>
+                        <a *ngIf="transactions.length > 0 && hasUnread" (click)="markAllRead()" class="">Mark all notifications as read.</a>
+                        <a *ngIf="transactions.length > 0 && !hasUnread" class="">No unread notifications.</a>
+                    </div>
+                    <!-- START Notification Footer-->
+                </div>
+                <!-- END Notification -->
+            </div>
+            <!-- END Notification Dropdown -->
+        </div>
+    </li>
+</ul>

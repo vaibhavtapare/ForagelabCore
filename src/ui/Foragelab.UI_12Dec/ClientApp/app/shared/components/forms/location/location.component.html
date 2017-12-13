@@ -1,0 +1,10 @@
+﻿
+<form (ngSubmit)="saveLocation()" role="form" #locationform="ngForm">
+    <input-focus label="Name" [propertyName]="name" class="form-group form-group-default" [(ngModel)]="location.name" name="name"></input-focus>
+    <input-focus label="Alias" [propertyName]="alias" class="form-group form-group-default" [(ngModel)]="location.alias" name="alias"></input-focus>
+    <select-focus required label="Address" [data]="addresses" dataTextField="condensedName" dataValueField="id" [propertyName]="addressId" class="form-group form-group-default required" [(ngModel)]="location.addressId" name="addressId"></select-focus>
+    <button type="submit" [disabled]="!locationform.form.valid || processing" class="btn btn-primary">
+        Save Location <i *ngIf="processing" class="fa fa-spinner fa-spin"></i>
+    </button>
+    <a *ngIf="!hideCancel" class="btn" (click)="close()">Cancel</a>
+</form>

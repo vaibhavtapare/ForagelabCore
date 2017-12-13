@@ -1,0 +1,177 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Work Instruction Step</h3>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="workInstructionStep" class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/jobs/',jobId,'work-instructions',workInstructionId]">Work Instruction Steps</a>
+        </li>
+        <li>
+            <a [routerLink]="['/jobs/',jobId,'work-instructions-steps',workInstructionId, workInstructionStep.id]" class="active">Step #{{workInstructionStep.sequence}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+        
+        <li *ngIf="showArchive" class="">
+           <a data-toggle="tab" href="#archive" aria-expanded="false"><span>Archive</span></a>
+        </li>
+        
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                    <li *ngIf="showArchive" class="">
+                        <a data-toggle="tab" href="#archive" aria-expanded="false"><span>Archive</span></a>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+                <option *ngIf="showArchive"  value="#archive">Archive</option>
+              </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <div class="row column-seperation" [in-progress]="processing">
+                <form (ngSubmit)="saveWorkInstructionStep()" role="form" #workinstructionstepupdateform="ngForm">
+                    <div class="panel col-md-12">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Overview
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+
+                                </div>
+                            </div>
+                            <div *ngIf="workInstructionStep" class="panel-body" [in-progress]="processing">
+                                <textarea-focus [disabled]="!isAllowWorkInstruction" label="Description" required [propertyName]="description" class="form-group form-group-default required" [(ngModel)]="workInstructionStep.description" name="description"></textarea-focus>
+                                <button *ngIf="isAllowWorkInstruction" type="submit" [disabled]="!workinstructionstepupdateform.form.valid || processing" class="btn btn-primary">
+                                    Save Step
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/jobs/',jobId,'work-instructions',workInstructionId])">Cancel</a>
+
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Select an image file to upload</label>
+                                            <input #fileInput type="file" name="profileImage" accept=".jpg,.png,.gif,.bmp,image/bmp,image/png,image/jpeg,image/gif" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <p>
+                                            <span class="thumbnail">
+                                                <img [src]="stepImage" class="photo" />
+                                            </span>
+                                        </p>
+                                        </div>
+                                    </div>
+                                       
+                                    </div>
+                                </div>
+                                <!-- END PANEL -->
+                            </div>
+                </form>
+        </div>
+        </div>
+        <div *permission="'workinstructions-archive'" class="tab-pane" id="archive">
+            <div *ngIf="isAllowWorkInstruction" class="row column-seperation">
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div *ngIf="workInstructionStep" class="panel-title">
+                                Archive {{workInstructionStep.title}}
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>&nbsp;</p>
+                                    <p><b class="text-danger">Archiving a step will prevent further time/data entry in the portal.</b></p>
+                                    <p>&nbsp;</p>
+                                    <button (click)="openModal('archiveStep')" type="submit" [disabled]="processing" class="btn btn-danger">
+                                        Archive Job
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal *permission="'workinstructions-archive'" id="archiveStep" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('archiveStep')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to archive step #.</p>
+                        <p><b class="text-danger">Reminder:</b> Archiving a step will prevent further time/data entry in the portal.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="archiveWorkInstructionStep();" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('archiveStep')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

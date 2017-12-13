@@ -1,0 +1,25 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:50888/",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "Foragelab.UI": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ApplicationInsightsInstrumentationKey": "16f3ecc4-9edc-4c99-bce4-0a8628d0fe7d",
+        "AzureFilePath": "https://ppgquality.blob.core.windows.net/dev/",
+        "apiVersion": "1.0",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "EnvironmentUrl": "http://localhost:5000/",
+        "apiUrl": "http://localhost:50675",
+        "EnvironmentName": "dev"
+      },
+      "applicationUrl": "http://localhost:5000"
+    }
+  }
+}

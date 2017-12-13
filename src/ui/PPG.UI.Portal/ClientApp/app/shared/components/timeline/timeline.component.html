@@ -1,0 +1,11 @@
+﻿
+<section class="timeline">
+    <timeline-item *ngFor="let transaction of data" [transaction]="transaction"></timeline-item>   
+
+    <div class="timeline-block timeline-more" *ngIf="pagination.pageSize < pagination.totalCount">
+        <div class="timeline-point" (click)="loadMore()">
+            <i *ngIf="!isLoading" class="fa fa-ellipsis-h"></i>
+            <i *ngIf="isLoading" class="fa fa-spinner fa-pulse fa-spin"></i>
+        </div>
+    </div>
+</section>

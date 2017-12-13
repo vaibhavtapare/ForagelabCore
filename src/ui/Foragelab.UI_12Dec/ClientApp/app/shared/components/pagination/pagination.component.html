@@ -1,0 +1,8 @@
+﻿
+<div *ngIf="pagination" class="col-xs-12 col-sm-6 pull-right dataTables_paginate paging_simple_numbers">
+    <ul class="">
+        <li class="paginate_button previous" [ngClass]="{'disabled': pagination.pageIndex == 0}"><a (click)="previousPage()" tabindex="0"><i class="pg-arrow_left"></i></a></li>
+        <li *ngFor="let page of pages" class="paginate_button" [ngClass]="{'active': page == pagination.pageIndex }"><a (click)="changePageIndex(page)" tabindex="0">{{page + 1}}</a></li>
+        <li class="paginate_button next" [ngClass]="{'disabled': pagination.pageIndex == pagination.totalPages - 1}"><a (click)="nextPage()" tabindex="0"><i class="pg-arrow_right"></i></a></li>
+    </ul>
+</div>

@@ -1,0 +1,463 @@
+﻿<div class="jumbotron  no-margin" data-pages="parallax">
+    <div class="container-fluid container-fixed-lg sm-p-l-20 sm-p-r-20">
+        <div class="inner" style="transform: translateY(0px); opacity: 1;">
+            <h3 class="">Edit Employee</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid container-fixed-lg">
+    <ul class="breadcrumb">
+        <li>
+            <a [routerLink]="['/employees']">Employees</a>
+        </li>
+        <li *ngIf="employee">
+            <a [routerLink]="['/employees/detail', employee.id]" class="active">{{employee.firstName}} {{employee.lastName}}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="container-fluid container-fixed-lg bg-white">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs nav-tabs-linetriangle hidden-sm hidden-xs" data-init-reponsive-tabs="dropdownfx">
+        <li class="active">
+            <a data-toggle="tab" href="#overview" aria-expanded="true"><span>Overview</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#address" aria-expanded="false"><span>Address</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#user" aria-expanded="false"><span>User Access</span></a>
+        </li>
+        <li class="" *ngIf="user && user.id > 0">
+            <a data-toggle="tab" href="#clientaccess" aria-expanded="false"><span>Client Access</span></a>
+        </li>
+        <li class="" *ngIf="user && user.id > 0">
+            <a data-toggle="tab" href="#profile" aria-expanded="false"><span>Profile Photo</span></a>
+        </li>
+        <li class="">
+            <a data-toggle="tab" href="#timeline" aria-expanded="false"><span>Timeline</span></a>
+        </li>
+        <li *permission="'employees-delete'" class="">
+            <a data-toggle="tab" href="#archive" aria-expanded="false"><span>Archive</span></a>
+        </li>
+    </ul>
+    <div class="nav-tab-dropdown cs-wrapper full-width p-t-10 visible-xs visible-sm">
+        <div class="cs-select cs-skin-slide full-width" tabindex="0">
+            <span class="cs-placeholder">Options</span>
+            <div class="cs-options">
+                <ul>
+                    <li data-option="" data-value="#overview">
+                        <span>Overview</span>
+                    </li>
+                    <li data-option="" data-value="#address">
+                        <span>Address</span>
+                    </li>
+                    <li data-option="" data-value="#user">
+                        <span>User Access</span>
+                    </li>
+                    <li data-option="" data-value="#clientaccess" *ngIf="user && user.id > 0">
+                        <span>Client Access</span>
+                    </li>
+                    <li data-option="" data-value="#profile" *ngIf="user && user.id > 0">
+                        <span>Profile Photo</span>
+                    </li>
+                    <li data-option="" data-value="#timeline">
+                        <span>Timeline</span>
+                    </li>
+                    <li *permission="'employees-delete'" data-option="" data-value="#archive">
+                        <span>Archive</span>
+                    </li>
+                </ul>
+            </div>
+            <select class="cs-select cs-skin-slide full-width" data-init-plugin="cs-select">
+                <option value="#overview" selected="">Overview</option>
+                <option value="#address">Address</option>
+                <option value="#user">User Access</option>
+                <option value="#clientaccess" *ngIf="user && user.id > 0">Client Access</option>
+                <option value="#profile" *ngIf="user && user.id > 0">Profile Photo</option>
+                <option value="#timeline">Timeline</option>
+                <option *permission="'employees-delete'" value="#archive">Archive</option>
+            </select>
+            <div class="cs-backdrop"></div>
+        </div>
+    </div>
+    
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="overview">
+            <form (ngSubmit)="saveEmployee()" role="form" #employeeaddform="ngForm">
+                <div class="row column-seperation">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Contact Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <input-focus required label="First Name" [propertyName]="firstName" class="form-group form-group-default required" [(ngModel)]="employee.firstName" name="firstName"></input-focus>
+                                <input-focus required label="Last Name" [propertyName]="lastName" class="form-group form-group-default required" [(ngModel)]="employee.lastName" name="lastName"></input-focus>
+                                <input-focus [mask]="'(999) 999-9999'" label="Home Phone" [propertyName]="homePhoneNumber" class="form-group form-group-default" [(ngModel)]="employee.homePhoneNumber" name="homePhoneNumber"></input-focus>
+                                <input-focus [mask]="'(999) 999-9999'" label="Mobile Phone" [propertyName]="mobilePhoneNumber" class="form-group form-group-default" [(ngModel)]="employee.mobilePhoneNumber" name="mobilePhoneNumber"></input-focus>
+                                <input-focus label="Personal Email Address" [placeholder]="'Not a @ppgquality.com address'" [propertyName]="emailAddress" class="form-group form-group-default" [(ngModel)]="employee.emailAddress" name="emailAddress"></input-focus>
+                                <button type="submit" [disabled]="!employeeaddform.form.valid || processing" class="btn btn-primary">
+                                    Save Employee
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>&nbsp;
+                                <a class="btn btn-default" [routerLink]="(['/employees'])">Cancel</a>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Corporate Information
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <select-focus required label="Type" [data]="employeeTypes" dataTextField="name" dataValueField="id" [propertyName]="employeeTypeId" class="form-group form-group-default required" [(ngModel)]="employee.employeeTypeId" name="employeeTypeId"></select-focus>
+                                <select-focus required label="Status" [data]="employeeStatuses" dataTextField="name" dataValueField="id" [propertyName]="employeeStatusId" class="form-group form-group-default required" [(ngModel)]="employee.employeeStatusId" name="employeeStatusId"></select-focus>
+                                <input-focus [mask]="'999-99-9999'" required label="Social Security Number" [propertyName]="ssn" class="form-group form-group-default required" [(ngModel)]="employee.ssn" name="ssn"></input-focus>
+                                <input-focus label="Alias" [propertyName]="alias" class="form-group form-group-default" [(ngModel)]="employee.alias" name="alias"></input-focus>
+                                <input-focus label="Title" [propertyName]="title" class="form-group form-group-default" [(ngModel)]="employee.title" name="title"></input-focus>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane" id="address">
+                <div class="row column-seperation">
+                    <div class="col-md-6">
+                        <!-- START PANEL -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="panel-title">
+                                    Home Address
+                                </div>
+                            </div>
+                            <div class="panel-body" [in-progress]="processing">
+                                <address [address]="address" hideCancel="true" [processing]="processing" (save)="saveAddress($event)"></address>
+                            </div>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </div>
+        </div>
+        <div class="tab-pane" id="user">
+            <div class="row column-seperation">
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                User Access
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <form (ngSubmit)="saveUser()" role="form" #userform="ngForm">
+                                <input-focus required label="Email Address" placeholder="@ppgquality.com email address" [propertyName]="emailAddress" class="form-group form-group-default required" [(ngModel)]="user.emailAddress" name="emailAddress"></input-focus>
+                                <input-focus label="Passord" [propertyName]="password" class="form-group form-group-default" [(ngModel)]="user.password" name="password"></input-focus>
+                                <input-focus label="Confirm Password" [propertyName]="confirmPassword" class="form-group form-group-default" [(ngModel)]="user.confirmPassword" name="confirmPassword"></input-focus>
+                                <input-focus *ngIf="user && user.id > 0" label="Last Login" [propertyName]="lastLogin" class="form-group form-group-default disabled" [(ngModel)]="user.lastLogin" name="lastLogin"></input-focus>
+                                <button type="submit" [disabled]="!userform.form.valid || processing" class="btn btn-primary pull-left">
+                                    Save User
+                                    <span *ngIf="processing" class="fa fa-spinner fa-spin"></span>
+                                </button>
+                            </form>
+
+                            <input *ngIf="user && !user.isArchived" [disabled]="processing" (click)="openModal('dectivateEmployee')" type="button" class="btn btn-danger pull-right" value="Deactivate User" />
+                            <input *ngIf="user && user.isArchived" [disabled]="processing" (click)="openModal('activateEmployee')" type="button" class="btn btn-success pull-right" value="Reactivate User" />
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+                <div class="col-md-6" *ngIf="user && user.id > 0">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                User Roles
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                           <div class="row">
+                               <div *ngFor="let role of roles" class="col-sm-6">
+                                   <div class="checkbox">
+                                       <input (click)="toggleRoleCheck(role)" [checked]="isInRole(role.id)" type="checkbox" value="{{role.id}}" [id]="'role' + role.id">
+                                       <label [for]="'role' + role.id">{{role.name}}</label>
+                                   </div>
+                               </div>
+                           </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="clientaccess" *ngIf="user && user.id > 0">
+            <div class="row column-seperation">
+                <div *permission="'employees-edit'" class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Full Access
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="clientprocessing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <input id="chkaccesstoall" (click)="toggleAccessClientCheck($event)"  [checked] ="isWildCard" type="checkbox" > Provide access to all clients &amp; locations
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                    <!-- START PANEL -->
+                    <div *ngIf="!isWildCard" class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Specific Client Access
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="clientprocessing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                        <ng2-dual-list-box [data]="clients" valueField="id" textField="name" availableText="Available Clients" selectedText="Assigned Clients"
+                                                           (onItemsMoved)="onClientMove($event)" [(ngModel)]="selectedClients"></ng2-dual-list-box>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                    <!-- START PANEL -->
+                    <div *ngIf="!isWildCard" class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Specific Location Access
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <select-focus  label="Client" [data]="locationClients" (change)="loadLocations($event)" dataTextField="name" dataValueField="id" [propertyName]="clientId" class="form-group form-group-default" [(ngModel)]="selectedclientId" name="clientId"></select-focus>
+                                </div>
+                                <div class="col-sm-12" [in-progress]="locationprocessing">
+                                    <ng2-dual-list-box [data]="locations" valueField="id" textField="name" availableText="Available Locations" selectedText="Assigned Locations"
+                                                       (onItemsMoved)="onLocationMove($event)" [(ngModel)]="selectedLocations" #locationdualbox></ng2-dual-list-box>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+             </div>
+        </div>
+        <div class="tab-pane" id="profile" *ngIf="user && user.id > 0">
+            <div class="row column-seperation">
+                <div *permission="'employees-edit'" class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Profile Photo
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form (ngSubmit)="saveProfileImage()" #photoform="ngForm">
+                                        <p>
+                                            For best results, use an image 140 pixels x 140 pixels in size. Acceptable files are PNG, GIF, JPEG.
+                                        </p>
+                                        <div class="form-group form-group-default required">
+                                            <label>Select an image file to upload</label>
+                                            <input #fileInput type="file" name="profileImage" accept=".jpg,.png,.gif,.bmp,image/bmp,image/png,image/jpeg,image/gif" />
+                                        </div>
+                                        <p>&nbsp;</p>
+                                        <button type="submit" [disabled]="!photoform.form.valid || processing" class="btn btn-primary">
+                                            Upload Photo
+                                        </button>
+                                    </form> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+                <div class="col-md-6" *ngIf="profileImage != null">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Current Photo
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>&nbsp;</p>
+                                    <p>
+                                        <span class="thumbnail-wrapper circular">
+                                           <img [src]="profileImage" class="photo" />
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="timeline">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Timeline
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <timeline [(isLoading)]="transactionsLoading" [(data)]="transactions" (refresh)="loadTransactions($event)" [(pagination)]="transactionPagination"></timeline>
+                        </div>
+                        <!-- END PANEL -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *permission="'employees-delete'" class="tab-pane" id="archive">
+            <div class="row column-seperation">
+                <div class="col-md-6">
+                    <!-- START PANEL -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="panel-title">
+                                Archive {{employee.firstName}} {{employee.lastName}}
+                            </div>
+                        </div>
+                        <div class="panel-body" [in-progress]="processing">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p>&nbsp;</p>
+                                    <p><b class="text-danger">Archiving an employee will deactivate their user account in the portal.</b></p>
+                                    <p>&nbsp;</p>
+                                    <button (click)="openModal('archiveEmployee')" type="submit" [disabled]="processing" class="btn btn-danger">
+                                        Archive Employee
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END PANEL -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<modal *permission="'employees-delete'" id="archiveEmployee" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('archiveEmployee')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to archive {{employee.firstName}} {{employee.lastName}}.</p>
+                        <p><b class="text-danger">Reminder:</b> Archiving a user will deactivate any permissions they have in the portal.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="archiveEmployee();" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('archiveEmployee')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'users-add'" id="activateEmployee" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('activateEmployee')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to reactivate {{employee.firstName}} {{employee.lastName}}'s user access.</p>
+                        <p>This will allow them to access the portal.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="reactivateUser();" type="button" class="btn btn-primary btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('activateEmployee')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>
+
+<modal *permission="'users-edit'" id="dectivateEmployee" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header clearfix text-left">
+                <button type="button" class="close" (click)="closeModal('dectivateEmployee')">
+                    <i class="pg-close fs-14"></i>
+                </button>
+                <h5 class="text-left p-b-5">Are you sure?</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p>Please confirm that you wish to deactivate {{employee.firstName}} {{employee.lastName}}'s user access.</p>
+                        <p><b class="text-danger">Reminder: </b>This will prevent them from accessing the portal.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <button (click)="deactivateUser();" type="button" class="btn btn-danger btn-block m-t-5">Confirm</button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button (click)="closeModal('dectivateEmployee')" class="btn btn-default btn-block m-t-5" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</modal>

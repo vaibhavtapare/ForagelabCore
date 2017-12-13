@@ -1,0 +1,20 @@
+﻿
+<app-sidebar class="page-sidebar" [ngClass]="{'visible': !settingService.layout.isCollapsed }"></app-sidebar>
+
+<div class="page-container">
+    <app-header class="header"></app-header>
+
+    <div class="page-content-wrapper">
+        <div class="content">
+            <notification-bar></notification-bar>
+            <router-outlet></router-outlet>
+        </div>
+
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+
+        <app-footer class="container-fluid container-fixed-lg footer"></app-footer>
+     
+    </div>
+</div>
+
