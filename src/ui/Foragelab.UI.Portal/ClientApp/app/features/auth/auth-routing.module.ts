@@ -17,6 +17,7 @@ export const authRoutes: Routes = [
             //{ path: 'home', component: HomeComponent },
             //{ path: 'reset/:hash', component: ResetComponent },
             //{ path: 'forgot', component: ForgotComponent }
+
         ]
     }
 ];

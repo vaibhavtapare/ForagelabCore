@@ -12,6 +12,7 @@ export class LoginComponent {
 
 
     RouteToHome() {
+
         alert('clicked'); 
         localStorage.setItem("CVASUser", "Set"); 
         this._router.navigate(['\home']);
