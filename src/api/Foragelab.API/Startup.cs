@@ -14,11 +14,17 @@ using Foragelab.Core.DataModel;
 using Foragelab.Core.DataModel.Repository;
 using Foragelab.Core.Services.Interfaces;
 using Foragelab.Core.Services.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace Foragelab.API
 {
     public class Startup
     {
+        // secretKey contains a secret passphrase only your server knows
+        private SymmetricSecurityKey JWTSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWTSecretKey"))); 
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,10 +37,36 @@ namespace Foragelab.API
         {
             var connection = @"Server = PEEYUSH_AGRAWAL; UID = sa; password = clarion; Initial Catalog = CVAS; MultipleActiveResultSets = true;";
             services.AddDbContext<CVASContext>(options => options.UseSqlServer(connection));
-            services.AddCors(); 
+            //Add framework services.
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                                                                           .AllowAnyMethod()
+                                                                           .AllowAnyHeader()
+                                                                           .WithExposedHeaders("X-Pagination")));
+
+            services.AddAuthentication()
+                    .AddJwtBearer(o =>
+                    {
+                        o.RequireHttpsMetadata = false;
+                        o.SaveToken = true;
+                        o.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = JWTSigningKey,
+                            ValidateIssuer = true,
+                            ValidIssuer = "PPG",
+                            ValidateAudience = true,
+                            ValidAudience = "PPGAud",
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.FromMinutes(5.0)
+                        };
+                    });
+
+
             services.AddMvc();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddTransient<IFeedCodeServices, FeedCodeServices>(); 
+            services.AddTransient<IFeedCodeServices, FeedCodeServices>();
+
+            services.AddApiVersioning(o => o.ApiVersionReader = new HeaderApiVersionReader("api-version")); 
 
         }
 
@@ -45,7 +77,9 @@ namespace Foragelab.API
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(options => options.WithOrigins("http://localhost:58069").AllowAnyMethod());
+            app.UseCors("AllowAll");
+
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }

@@ -9,11 +9,9 @@ import { AuthGuard } from "./guards/auth.guard";
     imports: [
         RouterModule
     ],
-    declarations: [
-    
+    declarations: [    
     ],
-    entryComponents: [
-    
+    entryComponents: [    
     ],
     exports: [
         CommonModule,

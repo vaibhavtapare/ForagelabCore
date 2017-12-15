@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
@@ -17,26 +16,35 @@ import { AppRoutingComponent } from "./app.routing.component";
 import { HomeModule } from "./features/home/home.module";
 import { LayoutModule } from "./layout/layout.module";
 import { SharedModule } from "./shared/shared.module";
+import { CoreModule } from "./core/core.module";
+import * as Globals from './shared/global/globals'; 
 
 @NgModule({
-    imports: [
+    imports: [     
+        CoreModule,
         LayoutModule,
-        SharedModule,
+        SharedModule,      
         
-        AuthModule,
-        CommonModule,
+        AuthModule,    
         HttpModule,
         FormsModule,  
         HomeModule,
         RouterModule.forRoot(appRoutes)
     ],
+
     declarations: [
         AppComponent,
         AppRoutingComponent, 
         NavMenuComponent,
         CounterComponent,
         FetchDataComponent     
-    ] 
+    ],
+    
+    providers: [
+        { provide: 'API_BASE', useValue: Globals.API_BASE },
+        { provide: 'API_VERSION', useValue: Globals.API_VERSION },
+    ]
 })
 export class AppModuleShared {
 }
+

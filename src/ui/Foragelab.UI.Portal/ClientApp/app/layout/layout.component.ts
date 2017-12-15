@@ -1,4 +1,5 @@
 ﻿import { Component } from '@angular/core';
+import { StateService } from "../core/services/state.service";
 
 
 
@@ -7,6 +8,6 @@
 })
 
 export class LayoutComponent  {
-    constructor()
+    constructor(public stateService: StateService)
     { }
 }

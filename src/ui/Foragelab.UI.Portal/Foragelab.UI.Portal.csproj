@@ -22,16 +22,28 @@
 
   <ItemGroup>
     <None Remove="ClientApp\app\app.routing.component.ts" />
+    <None Remove="ClientApp\app\core\core.module.ts" />
+    <None Remove="ClientApp\app\core\services\auth.service.ts" />
+    <None Remove="ClientApp\app\core\services\state.service.ts" />
     <None Remove="ClientApp\app\features\app.routing.ts" />
     <None Remove="ClientApp\app\features\auth\auth.component.ts" />
     <None Remove="ClientApp\app\features\auth\login\login.component.ts" />
     <None Remove="ClientApp\app\features\auth\logout\logout.component.ts" />
+    <None Remove="ClientApp\app\shared\bases\authenticated.component.base.ts" />
+    <None Remove="ClientApp\app\shared\bases\authenticated.service.base.ts" />
+    <None Remove="ClientApp\app\shared\global\globals.ts" />
     <None Remove="ClientApp\app\shared\guards\auth.guard.ts" />
+    <None Remove="ClientApp\app\shared\model\data-table-config.model.ts" />
+    <None Remove="ClientApp\app\shared\model\pagination.model.ts" />
+    <None Remove="ClientApp\app\shared\model\user-login.model.ts" />
     <None Remove="ClientApp\app\shared\shared.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\app.routing.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\core\core.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\core\services\auth.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\core\services\state.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\features\auth\auth-routing.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\features\auth\auth.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\features\auth\auth.module.ts" />
@@ -39,13 +51,19 @@
     <TypeScriptCompile Include="ClientApp\app\features\auth\logout\logout.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\features\home\home.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\features\home\home-routing.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\bases\authenticated.component.base.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\bases\authenticated.service.base.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\global\globals.ts" />
     <TypeScriptCompile Include="ClientApp\app\shared\guards\auth.guard.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\model\data-table-config.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\model\pagination.model.ts" />
+    <TypeScriptCompile Include="ClientApp\app\shared\model\user-login.model.ts" />
     <TypeScriptCompile Include="ClientApp\app\shared\shared.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\app\core\services\" />
     <Folder Include="ClientApp\app\layout\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

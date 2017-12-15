@@ -1,14 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Foragelab.UI.Portal</title>
     <base href="~/" />
-
+    
     <link rel="stylesheet" href="~/dist/vendor.css" asp-append-version="true" />
 </head>
 <body>
+    <input type ="hidden" id="hdnAPIURL" />
     @RenderBody()
 
     @RenderSection("scripts", required: false)
